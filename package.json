@@ -1,0 +1,165 @@
+{
+  "name": "last-known-good",
+  "displayName": "Last Known Good",
+  "description": "Automatic snapshots at every known-good state — clean compile, passing tests, or manual checkpoint — with one-command undo/restore when your code breaks. Invisible git-powered backup of your working tree.",
+  "version": "0.1.0",
+  "publisher": "lkg-dev",
+  "private": true,
+  "license": "MIT",
+  "icon": "icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/atharvaawate22/last-known-good"
+  },
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "SCM Providers",
+    "Other"
+  ],
+  "keywords": [
+    "snapshot",
+    "restore",
+    "checkpoint",
+    "undo",
+    "backup"
+  ],
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "lastKnownGood.markAsGood",
+        "title": "Mark as Good",
+        "category": "Last Known Good"
+      },
+      {
+        "command": "lastKnownGood.restore",
+        "title": "Restore…",
+        "category": "Last Known Good"
+      },
+      {
+        "command": "lastKnownGood.restoreSnapshot",
+        "title": "Restore This Snapshot",
+        "category": "Last Known Good"
+      },
+      {
+        "command": "lastKnownGood.deleteSnapshot",
+        "title": "Delete Snapshot",
+        "category": "Last Known Good"
+      },
+      {
+        "command": "lastKnownGood.refreshTimeline",
+        "title": "Refresh",
+        "category": "Last Known Good",
+        "icon": "$(refresh)"
+      }
+    ],
+    "views": {
+      "explorer": [
+        {
+          "id": "lastKnownGood.timeline",
+          "name": "Last Known Good",
+          "visibility": "collapsed"
+        }
+      ]
+    },
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "lastKnownGood.restoreSnapshot",
+          "when": "false"
+        },
+        {
+          "command": "lastKnownGood.deleteSnapshot",
+          "when": "false"
+        },
+        {
+          "command": "lastKnownGood.refreshTimeline",
+          "when": "false"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "lastKnownGood.refreshTimeline",
+          "when": "view == lastKnownGood.timeline",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "lastKnownGood.deleteSnapshot",
+          "when": "view == lastKnownGood.timeline && viewItem == lkgSnapshot"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Last Known Good",
+      "properties": {
+        "lastKnownGood.autoSnapshot.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically snapshot when the workspace has zero error diagnostics shortly after a save (trigger: ✓ compiled)."
+        },
+        "lastKnownGood.autoSnapshot.debounceSeconds": {
+          "type": "number",
+          "default": 4,
+          "minimum": 1,
+          "maximum": 60,
+          "description": "How long to wait after a save before checking diagnostics."
+        },
+        "lastKnownGood.autoSnapshot.strictness": {
+          "type": "string",
+          "enum": [
+            "errors",
+            "errors-and-warnings"
+          ],
+          "default": "errors",
+          "description": "What must be absent for the workspace to count as clean: only error diagnostics, or warnings too."
+        },
+        "lastKnownGood.autoSnapshot.excludeGlobs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Saves of files matching these globs (relative to the repo root, e.g. \"**/*.md\") never trigger an auto-snapshot."
+        },
+        "lastKnownGood.testTasks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Names of tasks whose success (exit code 0) creates a ✓✓ tests-passed snapshot."
+        },
+        "lastKnownGood.buildTasks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "description": "Names of tasks whose success (exit code 0) creates a ✓✓ build-passed snapshot."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "node esbuild.js --production",
+    "compile": "node esbuild.js",
+    "watch": "node esbuild.js --watch",
+    "typecheck": "tsc -p ./ --noEmit",
+    "test": "tsc -p ./ && node --test \"out/test/*.test.js\"",
+    "e2e": "node esbuild.js && tsc -p ./ && node out/test/e2e/runE2E.js"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.0",
+    "@types/vscode": "^1.90.0",
+    "@vscode/test-electron": "^3.0.0",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.5.0"
+  }
+}
