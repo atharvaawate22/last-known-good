@@ -52,7 +52,7 @@ export async function run(): Promise<void> {
   assert.ok(folder, "workspace folder missing");
   const root = folder.uri.fsPath;
 
-  const ext = vscode.extensions.getExtension("lkg-dev.last-known-good");
+  const ext = vscode.extensions.getExtension("atharvaawate.last-known-good");
   assert.ok(ext, "extension not found in test host");
   await ext.activate();
   log("extension activated");

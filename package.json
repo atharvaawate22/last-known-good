@@ -3,8 +3,7 @@
   "displayName": "Last Known Good",
   "description": "Automatic snapshots at every known-good state — clean compile, passing tests, or manual checkpoint — with one-command undo/restore when your code breaks. Invisible git-powered backup of your working tree.",
   "version": "0.1.0",
-  "publisher": "lkg-dev",
-  "private": true,
+  "publisher": "atharvaawate",
   "license": "MIT",
   "icon": "icon.png",
   "repository": {
