@@ -3,3 +3,5 @@ out/
 dist/
 *.vsix
 .vscode-test/
+.claude/
+CLAUDE.md
