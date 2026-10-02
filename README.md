@@ -21,6 +21,13 @@ trust:
 | ✓✓ tests / build | A task you designated exited with code 0 |
 | ↩ pre-restore | Automatic safety snapshot taken before every restore |
 
+## Install
+
+Install it from the
+[VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=atharvaawate.last-known-good),
+or open Quick Open (`Ctrl+P` / `Cmd+P`) and run
+`ext install atharvaawate.last-known-good`.
+
 ## Commands
 
 - **Last Known Good: Mark as Good** — snapshot the current state (tracked
