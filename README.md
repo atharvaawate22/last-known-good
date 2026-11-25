@@ -3,9 +3,6 @@
 [![VS Marketplace version](https://vsmarketplacebadges.dev/version-short/atharvaawate.last-known-good.svg?label=VS%20Marketplace&colorA=1e1e1e&colorB=007acc)](https://marketplace.visualstudio.com/items?itemName=atharvaawate.last-known-good)
 [![Install from the VS Code Marketplace](https://img.shields.io/badge/Install-VS%20Code%20Marketplace-007ACC?logo=visualstudiocode&logoColor=white)](https://marketplace.visualstudio.com/items?itemName=atharvaawate.last-known-good)
 
-<!-- TODO before publishing: record the demo GIF (red squiggles → Restore → clean code) and embed it here, above the fold: -->
-<!-- ![Demo: break your code, restore the last known good state](images/demo.gif) -->
-
 *"It was working 40 minutes ago and I don't know which of my 15 changes broke it."*
 
 Last Known Good snapshots your workspace when the code reaches a known-good
