@@ -224,15 +224,37 @@ export class SnapshotEngine {
    * restoreSnapshot).
    */
   async applySnapshot(hash: string, paths?: string[]): Promise<void> {
-    await git(this.repoRoot, [
-      ...NO_CONVERT,
-      "restore",
-      "--source",
-      hash,
-      "--worktree",
-      "--",
-      ...(paths && paths.length > 0 ? paths : ["."]),
-    ]);
+    // Always hand git an explicit file list. A broad pathspec like "." makes
+    // `git restore` delete files that are tracked in the real index but absent
+    // from the snapshot — i.e. files committed or staged after it.
+    let targets = paths;
+    if (!targets || targets.length === 0) {
+      const changes = await this.diffTrees(await this.currentTree(), await this.treeOf(hash));
+      targets = changes.filter((c) => c.status !== "D").map((c) => c.path);
+    }
+    if (targets.length === 0) {
+      return;
+    }
+
+    // Paths go through a NUL-separated file (no command-line length limit),
+    // and --literal-pathspecs stops names like "[id].tsx" acting as globs
+    // that would also match, and overwrite, files the user chose to keep.
+    const listFile = path.join(os.tmpdir(), `lkg-paths-${crypto.randomUUID()}`);
+    fs.writeFileSync(listFile, targets.join("\0"));
+    try {
+      await git(this.repoRoot, [
+        "--literal-pathspecs",
+        ...NO_CONVERT,
+        "restore",
+        "--source",
+        hash,
+        "--worktree",
+        `--pathspec-from-file=${listFile}`,
+        "--pathspec-file-nul",
+      ]);
+    } finally {
+      fs.rm(listFile, { force: true }, () => {});
+    }
   }
 
   /** Contents of one file as stored in a snapshot, or undefined if absent. */

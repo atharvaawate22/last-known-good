@@ -2,7 +2,7 @@
   "name": "last-known-good",
   "displayName": "Last Known Good",
   "description": "Automatic snapshots at every known-good state — clean compile, passing tests, or manual checkpoint — with one-command undo/restore when your code breaks. Invisible git-powered backup of your working tree.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "publisher": "atharvaawate",
   "license": "MIT",
   "icon": "icon.png",
@@ -157,7 +157,7 @@
   "devDependencies": {
     "@types/node": "^20.14.0",
     "@types/vscode": "^1.90.0",
-    "@vscode/test-electron": "^3.0.0",
+    "@vscode/test-electron": "^3.1.0",
     "esbuild": "^0.25.0",
     "typescript": "^5.5.0"
   }

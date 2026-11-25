@@ -72,6 +72,54 @@ describe("selective restore", () => {
   });
 });
 
+describe("restore leaves files outside the snapshot alone", () => {
+  it("full restore keeps files committed or staged after the snapshot", async () => {
+    const { dir, engine } = await makeRepo();
+    write(dir, "a.txt", "a good\n");
+    await git(dir, ["add", "-A"]);
+    await git(dir, ["commit", "-m", "base"]);
+    const hash = await snapshotHash(engine);
+
+    write(dir, "a.txt", "a BROKEN\n");
+    write(dir, "committed-later.txt", "committed after snapshot\n");
+    await git(dir, ["add", "committed-later.txt"]);
+    await git(dir, ["commit", "-m", "later"]);
+    write(dir, "staged-later.txt", "staged after snapshot\n");
+    await git(dir, ["add", "staged-later.txt"]);
+
+    await engine.restoreSnapshot(hash);
+
+    const read = (rel: string) => fs.readFileSync(path.join(dir, rel), "utf8");
+    assert.equal(read("a.txt"), "a good\n");
+    assert.equal(read("committed-later.txt"), "committed after snapshot\n");
+    assert.equal(read("staged-later.txt"), "staged after snapshot\n");
+  });
+});
+
+describe("selective restore with glob-like file names", () => {
+  it("treats names like [id].tsx literally and never touches unselected files", async () => {
+    const { dir, engine } = await makeRepo();
+    write(dir, "[id].tsx", "id good\n");
+    write(dir, "i.tsx", "i good\n");
+    write(dir, "app/[id]/page.tsx", "page good\n");
+    write(dir, "app/d/page.tsx", "d good\n");
+    const hash = await snapshotHash(engine);
+
+    write(dir, "[id].tsx", "id BROKEN\n");
+    write(dir, "i.tsx", "i mine\n");
+    write(dir, "app/[id]/page.tsx", "page BROKEN\n");
+    write(dir, "app/d/page.tsx", "d mine\n");
+
+    await engine.restoreSnapshot(hash, ["[id].tsx", "app/[id]/page.tsx"]);
+
+    const read = (rel: string) => fs.readFileSync(path.join(dir, rel), "utf8");
+    assert.equal(read("[id].tsx"), "id good\n");
+    assert.equal(read("app/[id]/page.tsx"), "page good\n");
+    assert.equal(read("i.tsx"), "i mine\n", "glob [id] must not match i.tsx");
+    assert.equal(read("app/d/page.tsx"), "d mine\n", "glob [id] must not match app/d/");
+  });
+});
+
 describe("fileAtSnapshot", () => {
   it("returns stored contents, and undefined for absent paths", async () => {
     const { dir, engine } = await makeRepo();
