@@ -21,6 +21,19 @@ trust:
 | ✓✓ tests / build | A task you designated exited with code 0 |
 | ↩ pre-restore | Automatic safety snapshot taken before every restore |
 
+## Screenshots
+
+<table>
+  <tr>
+    <td width="50%"><a href="images/restore-picker.png"><img src="images/restore-picker.png" alt="Restore picker listing snapshots with their trigger badges and how many files differ" /></a><br /><sub><b>1. Pick a snapshot</b>: each one labeled by what triggered it, with how many files differ. The timeline view and the <code>LKG: 20m ago</code> status bar item are on the left and bottom.</sub></td>
+    <td width="50%"><a href="images/restore-files.png"><img src="images/restore-files.png" alt="Per-file checklist with a snapshot versus current diff open behind it" /></a><br /><sub><b>2. Review the files</b>: uncheck any file to keep your current version; the diff button opens snapshot ↔ current.</sub></td>
+  </tr>
+  <tr>
+    <td width="50%"><a href="images/restore-confirm.png"><img src="images/restore-confirm.png" alt="Confirmation dialog listing the exact files that will be overwritten" /></a><br /><sub><b>3. Confirm</b>: the exact file list, and a reminder that a safety snapshot is taken first.</sub></td>
+    <td width="50%"><a href="images/restored.png"><img src="images/restored.png" alt="Code restored with zero errors and a new pre-restore snapshot in the timeline" /></a><br /><sub><b>4. Back to working code</b>: zero errors, and the broken state is kept as a <code>↩ pre-restore</code> snapshot.</sub></td>
+  </tr>
+</table>
+
 ## Install
 
 Install it from the
